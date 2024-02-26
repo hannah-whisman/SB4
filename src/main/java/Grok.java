@@ -21,6 +21,9 @@ public class Grok
     public Grok()
     {
         setPowerLevel(DEFAULT_POWER_LEVEL);
+        isAlive = true;
+
+
     }
 
     /*
@@ -30,7 +33,17 @@ public class Grok
      */
     public Grok(int powerLevel)
     {
-        setPowerLevel(powerLevel);
+        if (powerLevel <= 0) {
+            this.powerLevel = 0;
+            this.isAlive = false; // Grok is dead if instantiated with zero or negative power level
+        } else if (powerLevel > MAX_POWER_LEVEL) {
+            this.powerLevel = MAX_POWER_LEVEL;
+            this.isAlive = true; // Grok is alive with maximum power level
+        } else {
+            this.powerLevel = powerLevel;
+            this.isAlive = true; // Grok is alive if instantiated with positive power level within the allowed range
+        }
+
     }
 
     // accessor methods
@@ -47,6 +60,8 @@ public class Grok
     public boolean isDead()
     {
         // TODO: replace this line with your code here
+        //return powerLevel <= 0;
+        return !isAlive;
     }
 
     // mutator methods
@@ -57,7 +72,19 @@ public class Grok
      */
     public void setPowerLevel(int powerLevel)
     {
-        this.powerLevel = powerLevel;
+        if (!isAlive) {
+            // If the Grok is dead, do not change its power level
+            return;
+        }
+
+        if (powerLevel <= 0) {
+            this.powerLevel = 0;
+            this.isAlive = false; // Grok is dead if power level drops to zero
+        } else if (powerLevel > MAX_POWER_LEVEL) {
+            this.powerLevel = MAX_POWER_LEVEL;
+        } else {
+            this.powerLevel = powerLevel;
+        }
     }
 
     /*
@@ -68,6 +95,10 @@ public class Grok
      */
     public void takePowerPill(PowerPill pill)
     {
+        if (!isAlive) {
+            // If the Grok is dead, do not increase its power level
+            return;
+        }
         setPowerLevel(powerLevel + pill.getPower());
     }
 
@@ -77,6 +108,10 @@ public class Grok
      */
     public void tookHit()
     {
+        if (!isAlive) {
+            // If the Grok is dead, do not decrease its power level
+            return;
+        }
         setPowerLevel(powerLevel - 5);
     }
 
